@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useAppData, userService } from '@/context/AppContext';
 import Loading from '@/component/Loading';
+import toast from 'react-hot-toast';
 
 const LoginPage = () => {
 	const [email, setEmail] = useState<string>('');
@@ -21,10 +22,10 @@ const LoginPage = () => {
 
 		try {
 			const { data } = await axios.post(`${userService}/user/login`, { email });
-			alert(data.message);
+			toast.success(data.message);
 			router.push(`/verify?email=${email}`);
 		} catch (error: any) {
-			alert(error.response.data.message);
+			toast.error(error.response.data.message);
 		} finally {
 			setLoading(false);
 		}

@@ -3,6 +3,7 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import toast, { Toaster } from 'react-hot-toast';
 
 export const userService = 'http://localhost:5000/api/v1';
 export const chatService = 'http://localhost:5002/api/v1';
@@ -63,17 +64,29 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 			setUser(data);
 			setIsAuth(true);
 			setLoading(false);
-		} catch (error) {
-			console.error(error);
+		} catch (error: any) {
+			toast.error(error.response.data.message);
 			setLoading(false);
 		}
+	}
+
+	async function logoutUser() {
+		Cookies.remove('token');
+		setUser(null);
+		setIsAuth(false);
+		toast.success('User Logged Out');
 	}
 
 	useEffect(() => {
 		fetchUser();
 	}, []);
 
-	return <AppContext.Provider value={{ user, setUser, isAuth, setIsAuth, loading }}>{children}</AppContext.Provider>;
+	return (
+		<AppContext.Provider value={{ user, setUser, isAuth, setIsAuth, loading }}>
+			{children}
+			<Toaster position='top-right' />
+		</AppContext.Provider>
+	);
 };
 
 export const useAppData = (): AppContextType => {
