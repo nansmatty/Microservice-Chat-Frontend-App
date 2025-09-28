@@ -1,5 +1,6 @@
 'use client';
 
+import ChatSidebar from '@/component/ChatSidebar';
 import Loading from '@/component/Loading';
 import { useAppData, User } from '@/context/AppContext';
 import { useRouter } from 'next/navigation';
@@ -40,9 +41,26 @@ const ChatPage = () => {
 		}
 	}, [isAuth, router, loading]);
 
+	const handleLogout = () => logoutUser();
+
 	if (loading) return <Loading />;
 
-	return <div className='min-h-screen flex bg-gray-900 text-white relative overflow-hidden'>Chat App</div>;
+	return (
+		<div className='min-h-screen flex bg-gray-900 text-white relative overflow-hidden'>
+			<ChatSidebar
+				sidebarOpen={sideBarOpen}
+				setSideBarOpen={setSideBarOpen}
+				showAllUsers={showAllUser}
+				setShowAllUsers={setShowAllUser}
+				users={users}
+				loggedInUser={loggedInUser}
+				handleLogout={handleLogout}
+				chats={chats}
+				selectedUser={selectedUser}
+				setSeletedUser={setSelectedUser}
+			/>
+		</div>
+	);
 };
 
 export default ChatPage;
