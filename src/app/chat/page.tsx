@@ -2,9 +2,13 @@
 
 import ChatSidebar from '@/component/ChatSidebar';
 import Loading from '@/component/Loading';
-import { useAppData, User } from '@/context/AppContext';
+import { chatService, useAppData, User } from '@/context/AppContext';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import Cookies from 'js-cookie';
+import axios from 'axios';
+import ChatHeader from '@/component/ChatHeader';
 
 export interface Message {
 	_id: string;
@@ -43,6 +47,54 @@ const ChatPage = () => {
 
 	const handleLogout = () => logoutUser();
 
+	async function fetchChat() {
+		const token = Cookies.get('token');
+		try {
+			const { data } = await axios.get(`${chatService}/chat/${selectedUser}/messages`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			setMessages(data.messages);
+			setUser(data.user);
+			await fetchChats();
+		} catch (error) {
+			console.log(error);
+			toast.error('Failed to load messages.');
+		}
+	}
+
+	async function createChat(user: User) {
+		try {
+			const token = Cookies.get('token');
+			const { data } = await axios.post(
+				`${chatService}/chat/message`,
+				{
+					// userId: loggedInUser?._id,
+					recipientId: user._id,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+
+			setSelectedUser(data.chatId);
+			setShowAllUser(false);
+			await fetchChats();
+		} catch (error) {
+			toast.error('Failed to start chat');
+		}
+	}
+
+	useEffect(() => {
+		if (selectedUser) {
+			fetchChat();
+		}
+	}, [selectedUser]);
+
 	if (loading) return <Loading />;
 
 	return (
@@ -58,7 +110,11 @@ const ChatPage = () => {
 				chats={chats}
 				selectedUser={selectedUser}
 				setSeletedUser={setSelectedUser}
+				createChat={createChat}
 			/>
+			<div className='flex flex-1 flex-col justify-between p-4 backdrop-blur-xl bg-white/5 border-[1px] border-white/10'>
+				<ChatHeader />
+			</div>
 		</div>
 	);
 };
