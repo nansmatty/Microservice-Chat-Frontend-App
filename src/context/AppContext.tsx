@@ -67,7 +67,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 				},
 			});
 
-			setUser(data);
+			setUser(data.user);
 			setIsAuth(true);
 			setLoading(false);
 		} catch (error: any) {

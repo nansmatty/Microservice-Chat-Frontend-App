@@ -39,7 +39,7 @@ const ChatMessages = ({ selectedUser, messages, loggedInUser }: ChatMessagesProp
 				) : (
 					<>
 						{uniqueMessage.map((e, i) => {
-							const isSentByMe = e.sender == loggedInUser?._id;
+							const isSentByMe = e.sender === loggedInUser?._id;
 							const uniquekey = `${e._id}-${i}`;
 
 							return (
