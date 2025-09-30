@@ -10,6 +10,7 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import ChatHeader from '@/component/ChatHeader';
 import ChatMessages from '@/component/ChatMessages';
+import MessageInput from '@/component/MessageInput';
 
 export interface Message {
 	_id: string;
@@ -90,6 +91,61 @@ const ChatPage = () => {
 		}
 	}
 
+	const handleMessageSend = async (e: any, imageFile?: File | null) => {
+		e.preventDefault();
+
+		if (!message.trim() && !imageFile) return;
+
+		if (!selectedUser) return;
+
+		//socket work
+
+		const token = Cookies.get('token');
+
+		try {
+			const formData = new FormData();
+			formData.append('chatId', selectedUser);
+
+			if (message.trim()) {
+				formData.append('text', message);
+			}
+
+			if (imageFile) {
+				formData.append('image', imageFile);
+			}
+
+			const { data } = await axios.post(`${chatService}/chat/send`, formData, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'multipart/form-data',
+				},
+			});
+
+			setMessages((prev) => {
+				const currentMessages = prev || [];
+				const messageExists = currentMessages.some((msg) => msg._id === data.message._id);
+
+				if (!messageExists) {
+					return [...currentMessages, data.message];
+				}
+
+				return currentMessages;
+			});
+
+			setMessage('');
+			const displayText = imageFile ? '📷 image' : message;
+		} catch (error: any) {
+			toast.error(error.response.data.message);
+		}
+	};
+
+	const handleTyping = (value: string) => {
+		setMessage(value);
+		if (!selectedUser) return;
+
+		// socket setup
+	};
+
 	useEffect(() => {
 		if (selectedUser) {
 			fetchChat();
@@ -116,6 +172,7 @@ const ChatPage = () => {
 			<div className='flex flex-1 flex-col justify-between p-4 backdrop-blur-xl bg-white/5 border-[1px] border-white/10'>
 				<ChatHeader user={user} setSidebarOpen={setSideBarOpen} isTyping={isTyping} />
 				<ChatMessages selectedUser={selectedUser} messages={messages} loggedInUser={loggedInUser} />
+				<MessageInput selectedUser={selectedUser} message={message} setMessage={handleTyping} handleMessageSend={handleMessageSend} />
 			</div>
 		</div>
 	);
