@@ -21,7 +21,7 @@ const LoginPage = () => {
 		setLoading(true);
 
 		try {
-			const { data } = await axios.post(`${userService}/user/login`, { email });
+			const { data } = await axios.post(`${userService}/api/v1/user/login`, { email });
 			toast.success(data.message);
 			router.push(`/verify?email=${email}`);
 		} catch (error: any) {

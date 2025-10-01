@@ -52,7 +52,7 @@ const ChatPage = () => {
 	async function fetchChat() {
 		const token = Cookies.get('token');
 		try {
-			const { data } = await axios.get(`${chatService}/chat/${selectedUser}/messages`, {
+			const { data } = await axios.get(`${chatService}/api/v1/chat/${selectedUser}/messages`, {
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
@@ -71,7 +71,7 @@ const ChatPage = () => {
 		try {
 			const token = Cookies.get('token');
 			const { data } = await axios.post(
-				`${chatService}/chat/message`,
+				`${chatService}/api/v1/chat/message`,
 				{
 					recipientId: user._id,
 				},
@@ -113,7 +113,7 @@ const ChatPage = () => {
 				formData.append('image', imageFile);
 			}
 
-			const { data } = await axios.post(`${chatService}/chat/send`, formData, {
+			const { data } = await axios.post(`${chatService}/api/v1/chat/send`, formData, {
 				headers: {
 					Authorization: `Bearer ${token}`,
 					'Content-Type': 'multipart/form-data',
