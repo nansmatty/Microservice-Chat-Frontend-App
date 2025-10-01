@@ -15,6 +15,7 @@ interface ChatSidebarProps {
 	setSeletedUser: (userId: string | null) => void;
 	handleLogout: () => void;
 	createChat: (user: User) => void;
+	onlineUsers: string[];
 }
 
 const ChatSidebar = ({
@@ -29,6 +30,7 @@ const ChatSidebar = ({
 	setSeletedUser,
 	handleLogout,
 	createChat,
+	onlineUsers,
 }: ChatSidebarProps) => {
 	const [searchQuery, setSearchQuery] = useState('');
 
@@ -89,11 +91,14 @@ const ChatSidebar = ({
 										<div className='flex items-center gap-3'>
 											<div className='relative'>
 												<UserCircle className='w-6 h-6 text-gray-300' />
+												{onlineUsers.includes(u._id) && (
+													<span className='absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-green-600 border-2 border-gray-900'></span>
+												)}
 											</div>
-											{/* show online symbol  */}
+
 											<div className='flex-1 min-w-0'>
 												<span className='font-medium text-white'>{u.name}</span>
-												<div className='text-xs text-gray-400 mt-0.5'>{/* TODO: to show online or offline text */}</div>
+												<div className='text-xs text-gray-400 mt-0.5'>{onlineUsers.includes(u._id) ? 'online' : 'offline'}</div>
 											</div>
 										</div>
 									</button>
@@ -122,8 +127,10 @@ const ChatSidebar = ({
 										<div className='relative'>
 											<div className='w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center'>
 												<UserCircle className='w-7 h-7 text-gray-300' />
-												{/* TODO: socket work online user work */}
 											</div>
+											{onlineUsers.includes(chat.user._id) && (
+												<span className='absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-green-600 border-2 border-gray-900'></span>
+											)}
 										</div>
 										<div className='flex-1 min-w-0'>
 											<div className='flex items-center justify-between mb-1'>

@@ -11,6 +11,7 @@ import axios from 'axios';
 import ChatHeader from '@/component/ChatHeader';
 import ChatMessages from '@/component/ChatMessages';
 import MessageInput from '@/component/MessageInput';
+import { SocketData } from '@/context/SocketContext';
 
 export interface Message {
 	_id: string;
@@ -29,6 +30,10 @@ export interface Message {
 
 const ChatPage = () => {
 	const { loading, isAuth, logoutUser, chats, user: loggedInUser, users, fetchChats, setChats } = useAppData();
+
+	const { onlineUsers } = SocketData();
+
+	console.log(onlineUsers);
 
 	const [selectedUser, setSelectedUser] = useState<string | null>(null);
 	const [message, setMessage] = useState('');
@@ -167,6 +172,7 @@ const ChatPage = () => {
 				selectedUser={selectedUser}
 				setSeletedUser={setSelectedUser}
 				createChat={createChat}
+				onlineUsers={onlineUsers}
 			/>
 			<div className='flex flex-1 flex-col justify-between p-4 backdrop-blur-xl bg-white/5 border-[1px] border-white/10'>
 				<ChatHeader user={user} setSidebarOpen={setSideBarOpen} isTyping={isTyping} />
