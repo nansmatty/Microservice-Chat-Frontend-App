@@ -1,7 +1,7 @@
 import { User } from '@/context/AppContext';
-import { CornerDownLeft, CornerDownRight, CornerUpLeft, LogOut, MessageCircle, Plus, Search, UserCircle, X } from 'lucide-react';
+import { CornerDownRight, CornerUpLeft, LogOut, MessageCircle, Plus, Search, UserCircle, X } from 'lucide-react';
 import Link from 'next/link';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 
 interface ChatSidebarProps {
 	sidebarOpen: boolean;

@@ -73,7 +73,6 @@ const ChatPage = () => {
 			const { data } = await axios.post(
 				`${chatService}/chat/message`,
 				{
-					// userId: loggedInUser?._id,
 					recipientId: user._id,
 				},
 				{
